@@ -1,13 +1,13 @@
 from typing import Optional, List
 from uuid import UUID
-from datetime import date
+from datetime import date as date_type
 from pydantic import BaseModel, Field
 from src.domain.entities.enums import TrainingType, TrainingZone, TerrainType
 
 
 class TrainingDayBase(BaseModel):
     """Base schema for TrainingDay."""
-    date: date = Field(..., description="Date of the training")
+    date: date_type = Field(..., description="Date of the training")
     training_type: TrainingType = Field(..., description="Type of training")
     zone: TrainingZone = Field(..., description="Training intensity zone")
     terrain: TerrainType = Field(..., description="Terrain type")
@@ -55,8 +55,8 @@ class TrainingPlanCreate(BaseModel):
     """Schema for creating a training plan."""
     customer_id: UUID = Field(..., description="Customer to assign the plan to")
     name: str = Field(..., min_length=1, max_length=200, description="Plan name")
-    start_date: date = Field(..., description="Plan start date")
-    end_date: date = Field(..., description="Plan end date")
+    start_date: date_type = Field(..., description="Plan start date")
+    end_date: date_type = Field(..., description="Plan end date")
     description: Optional[str] = Field(None, max_length=1000, description="Plan description")
     success_criteria: Optional[str] = Field(None, max_length=500, description="Success goal/criteria")
     training_days: Optional[List[TrainingDayCreate]] = Field(default=[], description="Training days in the plan")
@@ -88,8 +88,8 @@ class TrainingPlanCreate(BaseModel):
 class TrainingPlanUpdate(BaseModel):
     """Schema for updating a training plan."""
     name: Optional[str] = Field(None, min_length=1, max_length=200)
-    start_date: Optional[date] = None
-    end_date: Optional[date] = None
+    start_date: Optional[date_type] = None
+    end_date: Optional[date_type] = None
     description: Optional[str] = Field(None, max_length=1000)
     success_criteria: Optional[str] = Field(None, max_length=500)
 
@@ -100,8 +100,8 @@ class TrainingPlanResponse(BaseModel):
     coach_id: UUID
     customer_id: UUID
     name: str
-    start_date: date
-    end_date: date
+    start_date: date_type
+    end_date: date_type
     description: Optional[str]
     success_criteria: Optional[str]
     is_active: bool
