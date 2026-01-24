@@ -1,0 +1,16 @@
+# This docker-compose override file can be used for local development
+# to prevent rebuilding the image on every code change.
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/.venv  # Prevent mounting venv
+    environment:
+      - PYTHONUNBUFFERED=1
