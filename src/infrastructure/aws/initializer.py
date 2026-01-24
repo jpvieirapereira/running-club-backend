@@ -45,39 +45,6 @@ async def initialize_aws_resources():
         except dynamodb.meta.client.exceptions.ResourceInUseException:
             logger.info(f"Table {settings.dynamodb_users_table} already exists")
         
-        # Create Tasks table
-        try:
-            dynamodb.create_table(
-                TableName=settings.dynamodb_tasks_table,
-                KeySchema=[
-                    {'AttributeName': 'id', 'KeyType': 'HASH'}
-                ],
-                AttributeDefinitions=[
-                    {'AttributeName': 'id', 'AttributeType': 'S'},
-                    {'AttributeName': 'user_id', 'AttributeType': 'S'}
-                ],
-                GlobalSecondaryIndexes=[
-                    {
-                        'IndexName': 'user_id-index',
-                        'KeySchema': [
-                            {'AttributeName': 'user_id', 'KeyType': 'HASH'}
-                        ],
-                        'Projection': {'ProjectionType': 'ALL'},
-                        'ProvisionedThroughput': {
-                            'ReadCapacityUnits': 5,
-                            'WriteCapacityUnits': 5
-                        }
-                    }
-                ],
-                ProvisionedThroughput={
-                    'ReadCapacityUnits': 5,
-                    'WriteCapacityUnits': 5
-                }
-            )
-            logger.info(f"Created DynamoDB table: {settings.dynamodb_tasks_table}")
-        except dynamodb.meta.client.exceptions.ResourceInUseException:
-            logger.info(f"Table {settings.dynamodb_tasks_table} already exists")
-        
         # Create S3 bucket
         try:
             s3_client.create_bucket(Bucket=settings.s3_bucket_name)

@@ -28,7 +28,6 @@ def create_app() -> FastAPI:
     container = Container()
     container.wire(modules=[
         "src.presentation.api.v1.auth",
-        "src.presentation.api.v1.tasks",
         "src.presentation.api.dependencies",
     ])
     

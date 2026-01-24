@@ -1,7 +1,23 @@
-from .user_dto import UserDTO, CreateUserDTO, LoginDTO, TokenDTO
-from .task_dto import TaskDTO, CreateTaskDTO, UpdateTaskDTO
+from .user_dto import (
+    UserDTO, CoachDTO, CustomerDTO, AdminDTO,
+    CreateUserDTO, CreateCoachDTO, CreateCustomerDTO, CreateAdminDTO,
+    UpdateUserDTO, UpdateCoachDTO, UpdateCustomerDTO,
+    LoginDTO, TokenDTO, AssignCoachDTO
+)
+from .training_plan_dto import (
+    TrainingPlanDTO, CreateTrainingPlanDTO, UpdateTrainingPlanDTO,
+    TrainingDayDTO, CreateTrainingDayDTO, UpdateTrainingDayDTO
+)
+from .strava_dto import (
+    StravaActivityDTO, StravaConnectionDTO, StravaAuthDTO, ActivitySyncResultDTO
+)
 
 __all__ = [
-    "UserDTO", "CreateUserDTO", "LoginDTO", "TokenDTO",
-    "TaskDTO", "CreateTaskDTO", "UpdateTaskDTO"
+    "UserDTO", "CoachDTO", "CustomerDTO", "AdminDTO",
+    "CreateUserDTO", "CreateCoachDTO", "CreateCustomerDTO", "CreateAdminDTO",
+    "UpdateUserDTO", "UpdateCoachDTO", "UpdateCustomerDTO",
+    "LoginDTO", "TokenDTO", "AssignCoachDTO",
+    "TrainingPlanDTO", "CreateTrainingPlanDTO", "UpdateTrainingPlanDTO",
+    "TrainingDayDTO", "CreateTrainingDayDTO", "UpdateTrainingDayDTO",
+    "StravaActivityDTO", "StravaConnectionDTO", "StravaAuthDTO", "ActivitySyncResultDTO"
 ]

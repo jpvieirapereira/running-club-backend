@@ -25,7 +25,8 @@ servidor/
 │       └── middleware/      # HTTP middleware
 ├── entrypoints/
 │   ├── asgi.py             # ASGI entrypoint (local/container)
-│   └── lambda_handler.py   # Lambda entrypoint (AWS)
+│   ├── lambda_handler.py   # Lambda entrypoint (AWS)
+│   └── cli.py              # CLI entrypoint (admin tasks)
 └── tests/                  # Test suite
 ```
 
@@ -34,10 +35,14 @@ servidor/
 - ✅ **Clean Architecture**: Clear separation of concerns with dependency inversion
 - ✅ **FastAPI**: Modern, fast web framework with automatic OpenAPI docs
 - ✅ **Swagger/OpenAPI**: Interactive API documentation at `/docs`
-- ✅ **Multiple Entrypoints**: ASGI for local development, Lambda handler for AWS
+- ✅ **Multiple Entrypoints**: ASGI for local development, Lambda handler for AWS, CLI for admin tasks
 - ✅ **Dependency Injection**: Using `dependency-injector` for IoC
 - ✅ **JWT + OAuth2**: Secure authentication with password flow
+- ✅ **User Types**: Admin, Coach, and Customer with distinct roles
+- ✅ **Training Plans**: Coaches create detailed workout plans for customers
+- ✅ **Strava Integration**: OAuth2 connection with automatic activity sync
 - ✅ **DynamoDB + S3**: AWS services simulated with LocalStack
+- ✅ **CLI Tools**: Admin user creation and infrastructure setup
 - ✅ **UV Package Manager**: Fast Python package management
 - ✅ **Docker Compose**: Local development environment
 
@@ -94,6 +99,28 @@ docker-compose up localstack
 uvicorn entrypoints.asgi:app --reload
 ```
 
+### CLI Commands
+
+The project includes a CLI for administrative tasks:
+
+```bash
+# Create infrastructure (DynamoDB tables and S3 buckets)
+python -m entrypoints.cli create-infra
+
+# Create admin user
+python -m entrypoints.cli create-admin \
+    --email admin@example.com \
+    --password SecureP@ss123 \
+    --name "Admin User" \
+    --phone "11999999999" \
+    --dob "1990-01-01"
+
+# List all admins
+python -m entrypoints.cli list-admins
+```
+
+See [CLI.md](CLI.md) for full documentation.
+
 ### Run Tests
 
 ```bash
@@ -103,7 +130,7 @@ pytest
 ### Code Structure
 
 #### Domain Layer
-- **Entities**: Core business objects (User, Task)
+- **Entities**: Core business objects (User, Coach, Customer, Admin, TrainingPlan, StravaActivity)
 - **Repositories**: Interfaces for data access
 - No external dependencies
 
@@ -157,35 +184,37 @@ curl -X POST http://localhost:8000/api/v1/auth/login-json \
   }'
 ```
 
-### 3. Create a Task (Authenticated)
+### 3. Create a Training Plan (Coach)
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/tasks \
+curl -X POST http://localhost:8000/api/v1/training-plans \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Authorization: Bearer YOUR_COACH_TOKEN" \
   -d '{
-    "title": "My First Task",
-    "description": "Task description"
+    "customer_id": "CUSTOMER_UUID",
+    "start_date": "2024-02-01",
+    "end_date": "2024-02-28",
+    "goal": "5K race preparation"
   }'
 ```
 
-### 4. List Tasks
+### 4. Connect Strava
 
 ```bash
-curl -X GET http://localhost:8000/api/v1/tasks \
+# Get authorization URL
+curl -X GET http://localhost:8000/api/v1/strava/connect \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# After authorization, check connection status
+curl -X GET http://localhost:8000/api/v1/strava/status \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
-### 5. Update Task
+### 5. Sync Strava Activities
 
 ```bash
-curl -X PUT http://localhost:8000/api/v1/tasks/{task_id} \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -d '{
-    "title": "Updated Title",
-    "completed": true
-  }'
+curl -X POST http://localhost:8000/api/v1/strava/sync \
+  -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 ## AWS Lambda Deployment

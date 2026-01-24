@@ -26,10 +26,17 @@ class Settings(BaseSettings):
     
     # DynamoDB
     dynamodb_users_table: str = Field(default="users", alias="DYNAMODB_USERS_TABLE")
-    dynamodb_tasks_table: str = Field(default="tasks", alias="DYNAMODB_TASKS_TABLE")
+    dynamodb_training_plans_table: str = Field(default="training_plans", alias="DYNAMODB_TRAINING_PLANS_TABLE")
+    dynamodb_activities_table: str = Field(default="strava_activities", alias="DYNAMODB_ACTIVITIES_TABLE")
     
     # S3
     s3_bucket_name: str = Field(default="servidor-files", alias="S3_BUCKET_NAME")
+    
+    # Strava
+    strava_client_id: str = Field(default="", alias="STRAVA_CLIENT_ID")
+    strava_client_secret: str = Field(default="", alias="STRAVA_CLIENT_SECRET")
+    strava_webhook_verify_token: str = Field(default="STRAVA_WEBHOOK_SECRET", alias="STRAVA_WEBHOOK_VERIFY_TOKEN")
+    strava_callback_url: str = Field(default="http://localhost:8000/api/v1/strava/callback", alias="STRAVA_CALLBACK_URL")
     
     # API
     api_v1_prefix: str = Field(default="/api/v1", alias="API_V1_PREFIX")
