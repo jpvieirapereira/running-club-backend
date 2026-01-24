@@ -25,7 +25,14 @@ class AuthenticationUseCase:
         user = User(
             email=dto.email,
             hashed_password=hashed_password,
-            full_name=dto.full_name
+            name=dto.name,
+            document_number=dto.document_number,
+            date_of_birth=dto.date_of_birth,
+            phone=dto.phone,
+            nickname=dto.nickname,
+            runner_level=dto.runner_level,
+            training_availability=dto.training_availability,
+            challenge_next_month=dto.challenge_next_month
         )
         
         created_user = await self.user_repository.create(user)
@@ -33,7 +40,14 @@ class AuthenticationUseCase:
         return UserDTO(
             id=created_user.id,
             email=created_user.email,
-            full_name=created_user.full_name,
+            name=created_user.name,
+            document_number=created_user.document_number,
+            date_of_birth=created_user.date_of_birth,
+            phone=created_user.phone,
+            nickname=created_user.nickname,
+            runner_level=created_user.runner_level,
+            training_availability=created_user.training_availability,
+            challenge_next_month=created_user.challenge_next_month,
             is_active=created_user.is_active
         )
     
@@ -70,6 +84,13 @@ class AuthenticationUseCase:
         return UserDTO(
             id=user.id,
             email=user.email,
-            full_name=user.full_name,
+            name=user.name,
+            document_number=user.document_number,
+            date_of_birth=user.date_of_birth,
+            phone=user.phone,
+            nickname=user.nickname,
+            runner_level=user.runner_level,
+            training_availability=user.training_availability,
+            challenge_next_month=user.challenge_next_month,
             is_active=user.is_active
         )

@@ -9,7 +9,7 @@ class AuthService:
     """Service for authentication and password hashing."""
     
     def __init__(self):
-        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__rounds=12)
         self.secret_key = settings.secret_key
         self.algorithm = settings.algorithm
         self.access_token_expire_minutes = settings.access_token_expire_minutes
@@ -20,6 +20,9 @@ class AuthService:
     
     def get_password_hash(self, password: str) -> str:
         """Hash a password."""
+        # Trim password to 72 bytes to avoid bcrypt issues
+        if len(password.encode('utf-8')) > 72:
+            password = password[:72]
         return self.pwd_context.hash(password)
     
     def create_access_token(self, data: dict, expires_delta: Optional[timedelta] = None) -> str:

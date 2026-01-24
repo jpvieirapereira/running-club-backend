@@ -1,8 +1,9 @@
 from typing import Optional, List
 from uuid import UUID
-from datetime import datetime
+from datetime import datetime, date
 from boto3.dynamodb.conditions import Key
 from src.domain.entities.user import User
+from src.domain.entities.enums import RunnerLevel, TrainingAvailability
 from src.domain.repositories.user_repository import UserRepository
 from src.infrastructure.aws.client_factory import AWSClientFactory
 from src.infrastructure.config import settings
@@ -17,22 +18,44 @@ class DynamoDBUserRepository(UserRepository):
     
     def _to_item(self, user: User) -> dict:
         """Convert User entity to DynamoDB item."""
-        return {
+        item = {
             'id': str(user.id),
             'email': user.email,
             'hashed_password': user.hashed_password,
-            'full_name': user.full_name,
+            'name': user.name,
+            'document_number': user.document_number,
+            'date_of_birth': user.date_of_birth.isoformat(),
+            'phone': user.phone,
             'is_active': user.is_active,
             'created_at': user.created_at.isoformat(),
             'updated_at': user.updated_at.isoformat()
         }
+        
+        # Add optional fields only if they have values
+        if user.nickname:
+            item['nickname'] = user.nickname
+        if user.runner_level:
+            item['runner_level'] = user.runner_level.value
+        if user.training_availability:
+            item['training_availability'] = user.training_availability.value
+        if user.challenge_next_month:
+            item['challenge_next_month'] = user.challenge_next_month
+        
+        return item
     
     def _from_item(self, item: dict) -> User:
         """Convert DynamoDB item to User entity."""
         user = User(
             email=item['email'],
             hashed_password=item['hashed_password'],
-            full_name=item.get('full_name'),
+            name=item['name'],
+            document_number=item['document_number'],
+            date_of_birth=date.fromisoformat(item['date_of_birth']),
+            phone=item['phone'],
+            nickname=item.get('nickname'),
+            runner_level=RunnerLevel(item['runner_level']) if item.get('runner_level') else None,
+            training_availability=TrainingAvailability(item['training_availability']) if item.get('training_availability') else None,
+            challenge_next_month=item.get('challenge_next_month'),
             is_active=item.get('is_active', True),
             id=UUID(item['id'])
         )
