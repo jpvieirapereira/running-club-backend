@@ -8,7 +8,7 @@ A Python backend for a running training platform following Clean Architecture pr
 
 ## 📑 Table of Contents
 
-- [What is Servidor?](#-what-is-servidor)
+- [What is Running App?](#-what-is-running)
 - [Features](#-features)
 - [Architecture](#️-architecture)
 - [Quick Start](#-quick-start)
@@ -24,9 +24,9 @@ A Python backend for a running training platform following Clean Architecture pr
 - [Tech Stack](#-tech-stack)
 - [Troubleshooting](#-troubleshooting)
 
-## 🏃 What is Servidor?
+## 🏃 What is Running App?
 
-Servidor is a comprehensive backend API for managing running training programs. It enables:
+Running App is a comprehensive backend API for managing running training programs. It enables:
 - **Coaches** to create and manage training plans for their athletes
 - **Customers** (athletes) to view their training plans and sync activities from Strava
 - **Admins** to manage the platform and users
