@@ -91,6 +91,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed architecture documentation.
 - **Python 3.11+**
 - **Docker & Docker Compose**
 - **UV** (recommended) or pip
+- **direnv**
 
 ### 1. Install UV (Fast Python Package Manager)
 
