@@ -1,11 +1,17 @@
-from typing import List
-from pydantic_settings import BaseSettings
-from pydantic import Field
+from typing import List, Union
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, field_validator
 import json
 
 
 class Settings(BaseSettings):
     """Application settings."""
+    
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        case_sensitive=False,
+        extra="ignore"  # Ignore extra fields from .env
+    )
     
     # Application
     app_name: str = Field(default="servidor", alias="APP_NAME")
@@ -40,23 +46,21 @@ class Settings(BaseSettings):
     
     # API
     api_v1_prefix: str = Field(default="/api/v1", alias="API_V1_PREFIX")
-    cors_origins: List[str] = Field(
+    cors_origins: Union[List[str], str] = Field(
         default=["http://localhost:3000", "http://localhost:8000"],
         alias="CORS_ORIGINS"
     )
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
-        
-        @classmethod
-        def parse_env_var(cls, field_name: str, raw_val: str):
-            if field_name == 'cors_origins':
-                try:
-                    return json.loads(raw_val)
-                except json.JSONDecodeError:
-                    return [raw_val]
-            return raw_val
+    @field_validator('cors_origins', mode='before')
+    @classmethod
+    def parse_cors_origins(cls, v):
+        """Parse CORS_ORIGINS from JSON string or return as-is if already a list."""
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                return [v]
+        return v
 
 
 settings = Settings()
